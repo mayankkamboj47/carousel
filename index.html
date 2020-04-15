@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Carousel</title>
+        <style>
+            body{
+                margin:0;
+                padding:0;
+            }
+            .carousel{
+                width:70vw;
+                height:80vh;
+                position: relative;
+            }
+            .carousel>img{
+                height:100%;
+                width:100%;
+            }
+            .carousel{
+                position:relative;
+            }
+            .carousel-caption{
+                position:absolute;
+                bottom:100px;
+                left:0;
+                right:0;
+                text-align:center;
+                color:white;
+                text-shadow: 1px 1px rgb(95, 93, 93);
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            }
+            .carousel-controls{
+                position:absolute;
+                bottom:5px;
+                left:0px;
+                right:0px;
+                text-align:center;
+            }
+            .carousel-controls>input:focus{
+                outline:none!important;
+            }
+            .carousel-controls>input{
+                display:inline-block;
+                border-radius: 50%;
+                margin-left:10px;
+                height:1em;
+                background:white;
+                box-shadow: none;
+                border:none;
+            }
+            .carousel-controls>input.active{
+                background:skyblue;
+            }
+        </style>
+    </head>
+    <body>
+        <div id='carousel' class='carousel'>
+            <img src='./images/blackhole.jpg' />
+            <img src='./images/flower.jpg'/>
+            <img src='./images/tulips.jpg' />
+            <div class='carousel-caption'>
+                Here, we can add some text
+                <h1>And maybe some more</h1>
+            </div>
+            <div class='carousel-controls'></div>
+        </div>
+        <script>
+            window.onload = function(){
+                let carousels = document.querySelectorAll('.carousel');
+                for(let carousel of carousels){
+                    animateCarousel(carousel);
+               }
+            }
+            function animateCarousel(carousel){
+                let images = carousel.querySelectorAll('img');
+                let controls = carousel.querySelector('.carousel-controls');
+                let controlsArray = [];
+                for(let image of images){
+                    image.style.display = "none";
+                }
+                images[0].style.display = 'block';
+                let scrollIndex = 0;
+                let timeout = setInterval(function(){
+                    images[scrollIndex%images.length].style.display = 'none';
+                    images[(scrollIndex+1)%images.length].style.display = 'block';
+                    if(controlsArray.length==images.length){
+                        controlsArray[(scrollIndex+1)%images.length].setAttribute('class','active')
+                        controlsArray[(scrollIndex)%images.length].removeAttribute('class');
+                    }
+                    scrollIndex++;
+                  },3000);
+                if(controls){
+                    for(let i=0;i<images.length;i++){
+                        let e = document.createElement('input');
+                        e.setAttribute('type','button');
+                        e.addEventListener('click',clickToggler(i));
+                        controls.appendChild(e);
+                        controlsArray.push(e);
+                    }
+                    controlsArray[0].setAttribute('class','active');
+                }
+                function clickToggler(i){
+                    return function(){
+                            let newIndex = scrollIndex%images.length;
+                            images[(scrollIndex)%images.length].setAttribute('style','display:none');
+                            controlsArray[(scrollIndex)%images.length].removeAttribute('class');
+                            console.log('display now:'+images[(scrollIndex)%images.length].style.display);
+                            images[i].setAttribute('style','display:block')
+                            controlsArray[i].setAttribute('class','active');
+                             scrollIndex = i;
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>
